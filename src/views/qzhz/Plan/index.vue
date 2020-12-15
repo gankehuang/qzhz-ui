@@ -62,7 +62,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item> -->
-      <el-form-item label="状态" prop="status">
+      <!-- <el-form-item label="状态" prop="status">
         <el-select
           v-model="queryParams.status"
           placeholder="请选择状态"
@@ -72,7 +72,7 @@
           <el-option label="有效" value="1" />
           <el-option label="无效" value="0" />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <!-- <el-form-item label="加入人数" prop="joinCount">
         <el-input
           v-model="queryParams.joinCount"
@@ -248,7 +248,7 @@
         <el-form-item label="年费(元)" prop="yearCosts">
           <el-input
             type="text"
-            oninput="value=value.replace(/[^\d]/g,'')"
+            oninput="value=value.replace(/[^\d.]/g,'')"
             v-model="form.yearCosts"
             placeholder="请输入年费"
           />
@@ -256,7 +256,7 @@
         <el-form-item label="观察期" prop="watchCount">
           <el-input
             type="text"
-            oninput="value=value.replace(/[^\d]/g,'')"
+            oninput="value=value.replace(/[^\d.]/g,'')"
             v-model="form.watchCount"
             placeholder="请输入观察期"
           />
@@ -264,7 +264,7 @@
         <el-form-item label="管理费(%)" prop="managementCosts">
           <el-input
             type="text"
-            oninput="value=value.replace(/[^\d]/g,'')"
+            oninput="value=value.replace(/[^\d.]/g,'')"
             v-model="form.managementCosts"
             placeholder="请输入管理费"
           />
@@ -275,7 +275,7 @@
         <el-form-item label="最高互助金(元)" prop="highCosts">
           <el-input
             type="text"
-            oninput="value=value.replace(/[^\d]/g,'')"
+            oninput="value=value.replace(/[^\d.]/g,'')"
             v-model="form.highCosts"
             placeholder="请输入最高互助金"
           />
@@ -341,7 +341,7 @@
       :title="title"
       :visible.sync="openDetail"
       :close-on-click-modal="false"
-      width="1000px"
+      width="1200px"
       append-to-body
     >
       <planDetail

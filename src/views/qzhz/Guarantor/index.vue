@@ -1042,7 +1042,7 @@ export default {
         planNo: row.joinPlanNo,
       };
 
-      isBlack({ blackIdCard: row.guarantorIdCard }).then((res) => {
+      isBlack({ blackIdCard: row.guarantorIdCard, planNo: row.joinPlanNo }).then((res) => {
         if (res.data.is_black) {
           this.$confirm(`该用户已在黑名单中，不能重复添加`, "提示", {
             confirmButtonText: "确定",
