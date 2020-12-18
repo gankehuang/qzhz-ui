@@ -33,7 +33,8 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['qzhz:Version:add']"
-        >新增</el-button>
+          >新增</el-button
+        >
       </el-col>
       <!-- <el-col :span="1.5">
         <el-button
@@ -64,22 +65,38 @@
           v-hasPermi="['qzhz:Version:export']"
         >导出</el-button>
       </el-col> -->
-	  <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar
+        :showSearch.sync="showSearch"
+        @queryTable="getList"
+      ></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="VersionList" @selection-change="handleSelectionChange">
+    <el-table
+      v-loading="loading"
+      :data="VersionList"
+      @selection-change="handleSelectionChange"
+    >
       <!-- <el-table-column type="selection" width="55" align="center" /> -->
       <el-table-column label="序号" type="index" width="50" align="center" />
       <el-table-column label="版本号" align="center" prop="versionNo" />
       <el-table-column label="来源" align="center" prop="sourceType" />
       <el-table-column label="版本升级地址" align="center" prop="downloadUrl" />
-      <el-table-column label="更新说明" align="center" prop="remark" />
-      <el-table-column label="是否强制升级" align="center" prop="isUpgrade" >
+      <el-table-column label="更新说明" align="center" prop="remark">
         <template slot-scope="scope">
-          <span>{{scope.row.isUpgrade == 0 ? '否' : '是'}}</span>
+          <div v-html="scope.row.remark"></div>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+
+      <el-table-column label="是否强制升级" align="center" prop="isUpgrade">
+        <template slot-scope="scope">
+          <span>{{ scope.row.isUpgrade == 0 ? "否" : "是" }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="操作"
+        align="center"
+        class-name="small-padding fixed-width"
+      >
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -87,20 +104,22 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['qzhz:Version:edit']"
-          >修改</el-button>
+            >修改</el-button
+          >
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['qzhz:Version:remove']"
-          >删除</el-button>
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
-      v-show="total>0"
+      v-show="total > 0"
       :total="total"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
@@ -108,10 +127,20 @@
     />
 
     <!-- 添加或修改版本信息表对话框 -->
-    <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" width="500px" append-to-body>
+    <el-dialog
+      :title="title"
+      :visible.sync="open"
+      :close-on-click-modal="false"
+      width="500px"
+      append-to-body
+    >
       <el-form ref="form" :model="form" :rules="rules" label-width="120px">
         <el-form-item label="版本号" prop="versionNo">
-          <el-input v-model="form.versionNo" maxlength="10" placeholder="请输入版本号(例：x.x.x)" />
+          <el-input
+            v-model="form.versionNo"
+            maxlength="10"
+            placeholder="请输入版本号(例：x.x.x)"
+          />
         </el-form-item>
         <el-form-item label="来源" prop="sourceType">
           <el-radio-group v-model="form.sourceType">
@@ -121,10 +150,15 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="版本升级地址" prop="downloadUrl">
-          <el-input v-model="form.downloadUrl" maxlength="200" placeholder="请输入更新说明" />
+          <el-input
+            v-model="form.downloadUrl"
+            maxlength="200"
+            placeholder="请输入更新说明"
+          />
         </el-form-item>
         <el-form-item label="更新说明" prop="remark">
-          <el-input v-model="form.remark" maxlength="200" placeholder="请输入更新说明" />
+          <!-- <el-input v-model="form.remark" maxlength="200" placeholder="请输入更新说明" /> -->
+          <editor v-model="form.remark" :min-height="192" />
         </el-form-item>
         <el-form-item label="是否强制升级" prop="isUpgrade">
           <!-- <el-input v-model="form.isUpgrade" placeholder="请输入是否强制升级" /> -->
@@ -143,9 +177,17 @@
 </template>
 
 <script>
-import { listVersion, getVersion, delVersion, addVersion, updateVersion, exportVersion } from "@/api/qzhz/Version";
-
+import {
+  listVersion,
+  getVersion,
+  delVersion,
+  addVersion,
+  updateVersion,
+  exportVersion,
+} from "@/api/qzhz/Version";
+import Editor from "@/components/Editor";
 export default {
+  components: { Editor },
   name: "Version",
   data() {
     return {
@@ -180,18 +222,21 @@ export default {
       rules: {
         versionNo: [
           { required: true, message: "版本号不能为空", trigger: "blur" },
-          { pattern: /^\d{1}(\.\d{1})(\.\d{1})$/, message: '  请输入正确的版本号' }
+          {
+            pattern: /^\d{1}(\.\d{1})(\.\d{1})$/,
+            message: "  请输入正确的版本号",
+          },
         ],
         remark: [
-          { required: true, message: "更新说明不能为空", trigger: "blur" }
+          { required: true, message: "更新说明不能为空", trigger: "blur" },
         ],
         isUpgrade: [
-          { required: true, message: "是否强制升级不能为空", trigger: "blur" }
+          { required: true, message: "是否强制升级不能为空", trigger: "blur" },
         ],
         sourceType: [
-          { required: true, message: "来源不能为空", trigger: "blur" }
-        ]
-      }
+          { required: true, message: "来源不能为空", trigger: "blur" },
+        ],
+      },
     };
   },
   created() {
@@ -201,7 +246,7 @@ export default {
     /** 查询版本信息表列表 */
     getList() {
       this.loading = true;
-      listVersion(this.queryParams).then(response => {
+      listVersion(this.queryParams).then((response) => {
         this.VersionList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -222,7 +267,7 @@ export default {
         createTime: null,
         updateTime: null,
         sourceType: null,
-        downloadUrl: null
+        downloadUrl: null,
       };
       this.resetForm("form");
     },
@@ -238,9 +283,9 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id)
-      this.single = selection.length!==1
-      this.multiple = !selection.length
+      this.ids = selection.map((item) => item.id);
+      this.single = selection.length !== 1;
+      this.multiple = !selection.length;
     },
     /** 新增按钮操作 */
     handleAdd() {
@@ -251,8 +296,8 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const id = row.id || this.ids
-      getVersion(id).then(response => {
+      const id = row.id || this.ids;
+      getVersion(id).then((response) => {
         this.form = response.data;
         this.open = true;
         this.title = "修改版本信息表";
@@ -260,16 +305,16 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
-      this.$refs["form"].validate(valid => {
+      this.$refs["form"].validate((valid) => {
         if (valid) {
           if (this.form.id != null) {
-            updateVersion(this.form).then(response => {
+            updateVersion(this.form).then((response) => {
               this.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addVersion(this.form).then(response => {
+            addVersion(this.form).then((response) => {
               this.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -281,30 +326,38 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$confirm('删除后，用户在APP客户端将不会收到升级弹窗提醒，确认要删除吗?', "警告", {
+      this.$confirm(
+        "删除后，用户在APP客户端将不会收到升级弹窗提醒，确认要删除吗?",
+        "警告",
+        {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
+          type: "warning",
+        }
+      )
+        .then(function () {
           return delVersion(ids);
-        }).then(() => {
+        })
+        .then(() => {
           this.getList();
           this.msgSuccess("删除成功");
-        })
+        });
     },
     /** 导出按钮操作 */
     handleExport() {
       const queryParams = this.queryParams;
-      this.$confirm('是否确认导出所有版本信息表数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
+      this.$confirm("是否确认导出所有版本信息表数据项?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(function () {
           return exportVersion(queryParams);
-        }).then(response => {
-          this.download(response.msg);
         })
-    }
-  }
+        .then((response) => {
+          this.download(response.msg);
+        });
+    },
+  },
 };
 </script>
